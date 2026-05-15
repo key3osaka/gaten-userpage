@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>GATEN職 会員機能 通常サイト統合 レイアウト案 v2</title>
+<style>
+  :root {
+    --primary: #1F4E79;
+    --gaten-dark: #1A1A1A;
+    --gaten-yellow: #E5C82B;
+    --gaten-blue: #1E73BE;
+    --gaten-green: #2E9F4E;
+    --accent: #FF7043;
+    --member: #FF7043;
+    --member-bg: #FFF3E0;
+    --member-border: #FFAB91;
+    --gray-50: #FAFAFA;
+    --gray-100: #F5F5F5;
+    --gray-200: #EEEEEE;
+    --gray-300: #E0E0E0;
+    --gray-500: #9E9E9E;
+    --gray-700: #616161;
+    --gray-900: #212121;
+  }
+  * { box-sizing: border-box; }
+  @page { size: A4 landscape; margin: 15mm; }
+  body {
+    font-family: "Yu Gothic", "游ゴシック", "Hiragino Kaku Gothic ProN", sans-serif;
+    background: #ECEFF1;
+    margin: 0;
+    padding: 20px 20px;
+    color: var(--gray-900);
+    line-height: 1.6;
+  }
+  .section-header { page-break-after: avoid; } table { page-break-inside: auto !important; } tr { page-break-inside: avoid !important; } .section { page-break-inside: auto !important; }
+  .section h2 { page-break-after: avoid; }
+  .annotations { page-break-inside: avoid; }
+  .container { max-width: 1280px; margin: 0 auto; }
+  .doc-title { text-align: center; margin-bottom: 8px; color: var(--primary); }
+  .doc-subtitle { text-align: center; color: var(--gray-700); margin-bottom: 40px; font-size: 14px; }
+
+  .legend {
+    background: white; border-radius: 8px; padding: 12px 20px;
+    margin-bottom: 24px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); font-size: 13px;
+  }
+  .legend strong { color: var(--primary); }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { display: inline-block; width: 16px; height: 16px; border-radius: 3px; }
+  .legend-swatch.member { background: var(--member-bg); border: 2px dashed var(--member-border); }
+  .legend-swatch.existing { background: white; border: 1px solid var(--gray-300); }
+
+  .section {
+    background: white; border-radius: 12px; padding: 28px;
+    margin-bottom: 28px; box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  .section-header { border-left: 6px solid var(--primary); padding-left: 14px; margin-bottom: 20px; }
+  .section-header h2 { margin: 0 0 4px; color: var(--primary); font-size: 20px; }
+  .section-header p { margin: 0; color: var(--gray-700); font-size: 13px; }
+
+  /* GATEN site mockup styles - matches real site */
+  .gaten-mockup {
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    overflow: hidden;
+    background: white;
+    position: relative;
+  }
+
+  /* Real GATEN top header (dark/black) */
+  .gaten-header {
+    background: #1A1A1A;
+    color: white;
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+  }
+  .gaten-logo {
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    letter-spacing: 1px;
+    border: 1px solid white;
+    padding: 2px 8px;
+  }
+  .gaten-header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 13px;
+  }
+  .gaten-header-right a { color: white; text-decoration: none; opacity: 0.9; }
+  .gaten-header-right .highlight { color: var(--gaten-yellow); }
+
+  /* Member dropdown */
+  .member-dropdown {
+    background: var(--member-bg);
+    border: 2px dashed var(--member-border);
+    border-radius: 18px;
+    padding: 4px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #993C1D;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .avatar {
+    width: 22px; height: 22px;
+    background: var(--accent);
+    border-radius: 50%;
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: bold;
+  }
+
+  /* Yellow hero */
+  .gaten-hero {
+    background: #E5C82B;
+    padding: 36px 20px;
+    text-align: center;
+    color: #1A1A1A;
+    position: relative;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .gaten-hero-content {
+    background: rgba(255,255,255,0.15);
+    padding: 20px 30px;
+    border-radius: 6px;
+  }
+  .gaten-hero-title { font-weight: bold; font-size: 16px; margin: 0; }
+  .gaten-hero-sub { font-size: 12px; margin-top: 8px; color: #444; }
+
+  /* Search box (real style: black background bar) */
+  .gaten-search-bar {
+    background: #1A1A1A;
+    padding: 14px 24px;
+  }
+  .gaten-search-row {
+    display: grid;
+    grid-template-columns: 1.3fr 1.3fr 1.6fr auto;
+    gap: 10px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .gaten-search-row > div {
+    background: white;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--gray-700);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .gaten-search-row .submit {
+    background: var(--gaten-blue);
+    color: white;
+    justify-content: center;
+    font-weight: bold;
+    padding: 8px 28px;
+  }
+  .feature-tags {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    flex-wrap: wrap;
+    align-items: center;
+    color: white;
+    font-size: 11px;
+  }
+  .feature-tag {
+    background: var(--gaten-yellow);
+    color: #1A1A1A;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-weight: bold;
+    font-size: 10px;
+  }
+
+  /* Pickup section */
+  .pickup-section { padding: 20px 24px; background: white; }
+  .pickup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .pickup-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1A1A1A;
+    position: relative;
+    padding-left: 14px;
+  }
+  .pickup-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 4px;
+    background: var(--gaten-yellow);
+  }
+  .pickup-more {
+    background: var(--gaten-blue);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 3px;
+    font-size: 11px;
+  }
+  .pickup-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+  }
+  .pickup-card {
+    border: 1px solid var(--gray-300);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    background: white;
+  }
+  .pickup-img {
+    height: 100px;
+    background: linear-gradient(135deg, #78909C, #455A64);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+  }
+  .pickup-body { padding: 8px; font-size: 10px; }
+  .pickup-name { font-weight: bold; line-height: 1.3; margin-bottom: 4px; }
+
+  /* Member keep button overlay */
+  .keep-overlay {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: white;
+    border: 2px dashed var(--member-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--member);
+    font-size: 14px;
+    z-index: 2;
+  }
+
+  /* Floating buttons (right side - matches real site) */
+  .floating-btns {
+    position: absolute;
+    right: 8px;
+    bottom: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 10;
+  }
+  .floating-btn {
+    background: white;
+    border: 1px solid var(--gray-300);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--gray-700);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  .floating-btn.chat {
+    background: var(--gaten-green);
+    color: white;
+    border: 2px dashed var(--member-border);
+    font-weight: bold;
+  }
+  .floating-btn.detail {
+    color: var(--gaten-blue);
+    font-weight: bold;
+  }
+
+  /* New member quick access (floating) */
+  .member-quick {
+    position: absolute;
+    right: 8px;
+    top: 60px;
+    background: var(--member-bg);
+    border: 2px dashed var(--member-border);
+    border-radius: 6px;
+    padding: 10px;
+    width: 200px;
+    z-index: 10;
+  }
+  .member-quick-tag {
+    display: inline-block;
+    background: var(--member);
+    color: white;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
+  .member-quick h4 {
+    margin: 0 0 6px;
+    font-size: 12px;
+    color: #993C1D;
+  }
+  .quick-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #444;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,171,145,0.4);
+  }
+  .quick-item:last-child { border: none; }
+  .quick-icon {
+    width: 18px; height: 18px;
+    background: white;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--member);
+  }
+  .quick-badge {
+    background: #D32F2F;
+    color: white;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 8px;
+    margin-left: auto;
+  }
+
+  /* Job detail page */
+  .job-breadcrumb {
+    padding: 10px 24px;
+    background: white;
+    font-size: 11px;
+    color: var(--gaten-blue);
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .breadcrumb-links {
+    display: flex;
+    gap: 16px;
+  }
+  .breadcrumb-link-member {
+    background: var(--member-bg);
+    border: 1.5px dashed var(--member-border);
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: #993C1D;
+    font-weight: bold;
+    font-size: 11px;
+  }
+
+  .job-hero {
+    background: #1A1A1A;
+    color: white;
+    padding: 12px 24px;
+    margin: 16px 24px 0;
+    font-weight: bold;
+    font-size: 13px;
+  }
+  .job-content {
+    padding: 16px 24px;
+  }
+  .job-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 6px;
+  }
+  .job-desc {
+    color: var(--gray-700);
+    font-size: 12px;
+    margin: 0 0 16px;
+  }
+  .job-image {
+    height: 180px;
+    background: linear-gradient(135deg, #607D8B, #455A64);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin: 0 24px 16px;
+  }
+  .job-info {
+    padding: 0 24px 80px;
+    font-size: 12px;
+  }
+  .job-info dt {
+    font-weight: bold;
+    margin-top: 12px;
+    font-size: 13px;
+  }
+  .job-info dd {
+    margin: 4px 0 0 0;
+    padding-left: 12px;
+  }
+  .job-tag {
+    display: inline-block;
+    border: 1px solid var(--gray-300);
+    padding: 2px 8px;
+    font-size: 11px;
+    margin: 2px;
+  }
+  .job-bottom-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: var(--primary);
+    padding: 10px 24px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  .job-bottom-bar button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .btn-keep {
+    background: white;
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300) !important;
+  }
+  .btn-chat {
+    background: var(--gaten-green);
+    color: white;
+  }
+  .btn-apply {
+    background: var(--gaten-blue);
+    color: white;
+  }
+
+  /* Expanded chat panel */
+  .chat-panel {
+    position: absolute;
+    right: 8px;
+    bottom: 130px;
+    width: 320px;
+    background: white;
+    border: 2px dashed var(--member-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    overflow: hidden;
+    z-index: 20;
+  }
+  .chat-panel-tag {
+    background: var(--member);
+    color: white;
+    font-size: 10px;
+    padding: 2px 8px;
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    border-radius: 3px;
+    font-weight: bold;
+  }
+  .chat-panel-header {
+    background: var(--gaten-green);
+    color: white;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .chat-list {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+  .chat-item {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    gap: 8px;
+    font-size: 11px;
+    align-items: center;
+  }
+  .chat-item.unread { background: #FFF8E1; }
+  .chat-avatar-sm {
+    width: 32px; height: 32px;
+    background: var(--gray-300);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: white;
+    flex-shrink: 0;
+  }
+  .chat-meta { flex: 1; min-width: 0; }
+  .chat-name { font-weight: bold; }
+  .chat-msg { color: var(--gray-700); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chat-time { color: var(--gray-500); font-size: 10px; }
+  .chat-unread-dot {
+    width: 8px; height: 8px;
+    background: #D32F2F;
+    border-radius: 50%;
+  }
+
+  /* Member-only sections wrapper */
+  .member-block {
+    background: var(--member-bg);
+    border: 2px dashed var(--member-border);
+    border-radius: 8px;
+    padding: 14px;
+    position: relative;
+    margin: 14px 24px;
+  }
+  .member-tag {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    background: var(--member);
+    color: white;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+  }
+
+  .history-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+  }
+  .history-card {
+    background: white;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 10px;
+  }
+  .history-img {
+    height: 60px;
+    background: linear-gradient(135deg, #8BC34A, #689F38);
+    border-radius: 3px;
+    margin-bottom: 4px;
+  }
+  .history-name { font-weight: bold; line-height: 1.2; }
+  .history-time { color: var(--gray-500); font-size: 9px; margin-top: 2px; }
+
+  /* Annotations */
+  .annotations {
+    margin-top: 14px;
+    background: var(--gray-50);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--gray-700);
+    border-left: 4px solid var(--member);
+  }
+  .annotations h4 { margin: 0 0 6px; color: var(--member); font-size: 13px; }
+  .annotations ul { margin: 0; padding-left: 16px; }
+  .annotations li { margin: 3px 0; }
+
+  /* Member dashboard reference (small) */
+  .ref-row { display: grid; grid-template-columns: 1fr 280px; gap: 20px; align-items: flex-start; }
+  .ref-side {
+    background: var(--gray-50);
+    border-radius: 6px;
+    padding: 14px;
+    font-size: 12px;
+  }
+  .ref-side h4 { margin: 0 0 8px; color: var(--primary); font-size: 13px; }
+  .ref-side ul { padding-left: 16px; margin: 0; }
+  .ref-side li { margin: 4px 0; }
+  .ref-side .cat { color: var(--member); font-weight: bold; margin-top: 8px; }
+
+  @media (max-width: 800px) {
+    .pickup-grid, .history-grid { grid-template-columns: repeat(3, 1fr); }
+    .ref-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1 class="doc-title">GATEN職 会員機能 通常サイト統合 レイアウト案 v2</h1>
+  <p class="doc-subtitle">実際の会員管理画面（gaten.info/member）の機能調査をもとに、通常サイトでの会員機能配置を設計</p>
+
+  <div class="legend">
+    <strong>凡例：</strong>
+    <div class="legend-item">
+      <span class="legend-swatch member"></span>
+      <span style="color:#993C1D"><strong>オレンジ点線 = 会員ログイン時に新規追加する要素</strong></span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch existing"></span>
+      <span>白 = 既存要素（基本そのまま）</span>
+    </div>
+  </div>
+
+  <!-- 確認した会員機能の構造 -->
+  <div class="section">
+    <div class="section-header">
+      <h2>調査結果：会員管理画面（/member）の構造</h2>
+      <p>実際にログインして確認した、サイドバーのメニュー一覧</p>
+    </div>
+    <div class="ref-row">
+      <div>
+        <p style="font-size:13px;color:var(--gray-700);margin:0 0 10px">サイドバーは4カテゴリで構成されています。今回ご要望の「相談チャット」と「閲覧」の2カテゴリを通常サイト側でアクセス可能にすることを目指します。</p>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;border:1px solid var(--gray-300)">
+          <thead>
+            <tr style="background:var(--primary);color:white">
+              <th style="padding:8px;text-align:left">カテゴリ</th>
+              <th style="padding:8px;text-align:left">メニュー</th>
+              <th style="padding:8px;text-align:left">通常サイト統合の必要性</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:var(--member-bg);border-bottom:1px solid var(--gray-300)">
+              <td style="padding:8px;font-weight:bold;color:#993C1D" rowspan="5">相談チャット</td>
+              <td style="padding:8px">ダッシュボード</td>
+              <td style="padding:8px;color:var(--gray-700)">統合不要（管理画面に留める）</td>
+            </tr>
+            <tr style="background:var(--member-bg);border-bottom:1px solid var(--gray-300)">
+              <td style="padding:8px">チャット</td>
+              <td style="padding:8px;color:#993C1D"><strong>★ 通常サイトで一覧アクセス可能に</strong></td>
+            </tr>
+            <tr style="background:var(--member-bg);border-bottom:1px solid var(--gray-300)">
+              <td style="padding:8px">押すだけ検索</td>
+              <td style="padding:8px;color:#993C1D"><strong>★ 通常サイトで利用可能に</strong></td>
+            </tr>
+            <tr style="background:var(--member-bg);border-bottom:1px solid var(--gray-300)">
+              <td style="padding:8px">検索結果一覧</td>
+              <td style="padding:8px;color:#993C1D"><strong>★ 通常サイトで利用可能に</strong></td>
+            </tr>
+            <tr style="background:var(--member-bg);border-bottom:1px solid var(--gray-300)">
+              <td style="padding:8px">定型文作成</td>
+              <td style="padding:8px;color:var(--gray-700)">統合不要</td>
+            </tr>
+            <tr style="background:var(--member-bg);border-bottom:1px solid var(--gray-300)">
+              <td style="padding:8px;font-weight:bold;color:#993C1D" rowspan="2">閲覧</td>
+              <td style="padding:8px">お気に入り</td>
+              <td style="padding:8px;color:#993C1D"><strong>★ 通常サイトで一覧アクセス可能に</strong></td>
+            </tr>
+            <tr style="background:var(--member-bg);border-bottom:1px solid var(--gray-300)">
+              <td style="padding:8px">閲覧履歴</td>
+              <td style="padding:8px;color:#993C1D"><strong>★ 通常サイトで一覧アクセス可能に</strong></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--gray-300)">
+              <td style="padding:8px;font-weight:bold;color:var(--primary)" rowspan="3">プロフィール</td>
+              <td style="padding:8px">基本情報</td>
+              <td style="padding:8px;color:var(--gray-700)">統合不要</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--gray-300)">
+              <td style="padding:8px">職歴・学歴</td>
+              <td style="padding:8px;color:var(--gray-700)">統合不要</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--gray-300)">
+              <td style="padding:8px">企業へ求めること</td>
+              <td style="padding:8px;color:var(--gray-700)">統合不要</td>
+            </tr>
+            <tr>
+              <td style="padding:8px;font-weight:bold;color:var(--primary)">PR</td>
+              <td style="padding:8px">みてみて</td>
+              <td style="padding:8px;color:var(--gray-700)">統合不要</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ref-side">
+        <h4>調査時の所見</h4>
+        <ul>
+          <li>企業詳細ページの下部に「お気に入り登録する／チャットで質問する／応募する」のアクションバーは既に存在</li>
+          <li>右上に「お気に入り」「閲覧履歴」のリンクは存在するが、クリックすると /member に遷移して管理画面に出てしまう</li>
+          <li>右下に「チャット相談」フローティングボタンは存在</li>
+          <li>つまり<strong>個別アクション機能はあるが、自分の保存・履歴・チャット一覧を通常サイトのまま見る機能がない</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 案1: トップページ ============ -->
+  <div class="section">
+    <div class="section-header">
+      <h2>案① トップページ（ログイン時）</h2>
+      <p>既存のヒーロー・検索バー・ピックアップ等は維持。右上のヘッダーと右側のフローティングボタンに会員機能を統合。</p>
+    </div>
+
+    <div class="gaten-mockup" style="position:relative;min-height:auto">
+      <!-- Header -->
+      <div class="gaten-header">
+        <div class="gaten-logo">GATEN職</div>
+        <div class="gaten-header-right">
+          <a class="highlight">求人掲載を検討中の企業様へ</a>
+          <div class="member-dropdown">
+            <div class="avatar">木</div>
+            <span>木脇さん</span>
+            <span style="font-size:10px;background:#D32F2F;color:white;padding:1px 5px;border-radius:8px">3</span>
+            <span>▾</span>
+          </div>
+          <a>≡</a>
+        </div>
+      </div>
+
+      <!-- Yellow hero -->
+      <div class="gaten-hero">
+        <div class="gaten-hero-content">
+          <h2 class="gaten-hero-title" style="font-size:18px">GATEN職 — ガテン系のお仕事求人サイト</h2>
+          <p class="gaten-hero-sub">建設業界に強い求人サイト</p>
+        </div>
+      </div>
+
+      <!-- Search bar (real style) -->
+      <div class="gaten-search-bar">
+        <div class="gaten-search-row">
+          <div><span style="background:var(--gaten-yellow);width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px">⛑</span>業種</div>
+          <div>📍 勤務地</div>
+          <div>キーワードを入力</div>
+          <div class="submit">検索</div>
+        </div>
+        <div class="feature-tags">
+          <span class="feature-tag">特集</span>独立したいあなたを応援してくれる企業特集
+          <span class="feature-tag" style="margin-left:8px">特集</span>ドライバー求人特集
+          <span style="margin-left:auto">詳しい条件で求人を検索する ›</span>
+        </div>
+      </div>
+
+      <!-- Pickup (existing) -->
+      <div class="pickup-section">
+        <div class="pickup-header">
+          <div class="pickup-title">ピックアップ</div>
+          <div class="pickup-more">一覧へ移動 ›</div>
+        </div>
+        <div class="pickup-grid">
+          <div class="pickup-card">
+            <div class="keep-overlay">♡</div>
+            <div class="pickup-img">企業画像</div>
+            <div class="pickup-body"><div class="pickup-name">【運送ドライバー】Amazonオフィシャル配送パートナー</div></div>
+          </div>
+          <div class="pickup-card">
+            <div class="keep-overlay">♡</div>
+            <div class="pickup-img">企業画像</div>
+            <div class="pickup-body"><div class="pickup-name">"土木作業員・ドライバー" 募集</div></div>
+          </div>
+          <div class="pickup-card">
+            <div class="keep-overlay" style="background:var(--member);color:white">♥</div>
+            <div class="pickup-img">企業画像</div>
+            <div class="pickup-body"><div class="pickup-name">施工管理者・現場作業員 同時募集</div></div>
+          </div>
+          <div class="pickup-card">
+            <div class="keep-overlay">♡</div>
+            <div class="pickup-img">企業画像</div>
+            <div class="pickup-body"><div class="pickup-name">鍛冶工、鉄骨工、金物工募集</div></div>
+          </div>
+          <div class="pickup-card">
+            <div class="keep-overlay">♡</div>
+            <div class="pickup-img">企業画像</div>
+            <div class="pickup-body"><div class="pickup-name">現場作業スタッフ 即日OK</div></div>
+          </div>
+          <div class="pickup-card">
+            <div class="keep-overlay">♡</div>
+            <div class="pickup-img">企業画像</div>
+            <div class="pickup-body"><div class="pickup-name">EV改修の「分断構造」</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recently viewed (member only) -->
+      <div class="member-block">
+        <span class="member-tag">会員限定</span>
+        <h4 style="margin:4px 0 10px;color:#993C1D">📖 最近見た企業（閲覧履歴）</h4>
+        <div class="history-grid">
+          <div class="history-card"><div class="history-img"></div><div class="history-name">土木設計・東洋グリーン</div><div class="history-time">今日</div></div>
+          <div class="history-card"><div class="history-img"></div><div class="history-name">三橋製作所・鉄骨</div><div class="history-time">今日</div></div>
+          <div class="history-card"><div class="history-img"></div><div class="history-name">○○建設</div><div class="history-time">昨日</div></div>
+          <div class="history-card"><div class="history-img"></div><div class="history-name">△△工業</div><div class="history-time">3日前</div></div>
+          <div class="history-card"><div class="history-img"></div><div class="history-name">□□塗装</div><div class="history-time">3日前</div></div>
+          <div class="history-card"><div class="history-img"></div><div class="history-name">▲▲建工</div><div class="history-time">1週間前</div></div>
+        </div>
+      </div>
+
+      <!-- Floating buttons (existing chat + detail search) + member quick (new) -->
+      <div class="floating-btns">
+        <div class="floating-btn detail">⚙ 詳細検索</div>
+        <div class="floating-btn chat">💬 チャット <span style="background:#D32F2F;color:white;font-size:9px;padding:1px 5px;border-radius:8px;margin-left:4px">2</span></div>
+      </div>
+
+      <!-- Member quick access panel (new) -->
+      <div class="member-quick">
+        <span class="member-quick-tag">会員クイックアクセス</span>
+        <h4>マイメニュー</h4>
+        <div class="quick-item">
+          <div class="quick-icon">💬</div>
+          <span>チャット</span>
+          <span class="quick-badge">2</span>
+        </div>
+        <div class="quick-item">
+          <div class="quick-icon">♥</div>
+          <span>お気に入り</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--gray-700)">3件</span>
+        </div>
+        <div class="quick-item">
+          <div class="quick-icon">⏱</div>
+          <span>閲覧履歴</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--gray-700)">12件</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotations">
+      <h4>追加要素のポイント</h4>
+      <ul>
+        <li><strong>ヘッダー右上：「マイページ▾」を会員バッジ（アバター・名前・通知数）に置き換え</strong>。クリックでチャット／お気に入り／閲覧履歴メニューを表示</li>
+        <li><strong>右下フローティングの「チャット相談」</strong>をログイン中は「チャット ●2件」のような未読バッジ付き表示に変更（クリックで一覧パネル展開）</li>
+        <li><strong>右上に「会員クイックアクセス」パネルを常設</strong>（または初回ログイン時のみ表示）：チャット／お気に入り／閲覧履歴の件数とリンクをサイト全域で見られる</li>
+        <li><strong>ページ下部に「最近見た企業」セクション</strong>を会員限定で追加。ピックアップとは別の自分専用枠</li>
+        <li>ピックアップ各カード右上に<strong>キープボタン（♡）</strong>を追加。クリックでお気に入り登録（管理画面と同じDBに保存）</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ 案2: 企業詳細ページ ============ -->
+  <div class="section">
+    <div class="section-header">
+      <h2>案② 企業詳細ページ（ログイン時）</h2>
+      <p>既存の下部アクションバー（お気に入り登録・チャットで質問・応募する）は維持。チャットを開いた時に通常サイト上で会話できる仕組みと、関連企業のレコメンドを追加。</p>
+    </div>
+
+    <div class="gaten-mockup" style="position:relative;min-height:auto">
+      <div class="gaten-header">
+        <div class="gaten-logo">GATEN職</div>
+        <div class="gaten-header-right">
+          <a class="highlight">求人掲載を検討中の企業様へ</a>
+          <div class="member-dropdown">
+            <div class="avatar">木</div>
+            <span>木脇さん</span>
+            <span>▾</span>
+          </div>
+          <a>≡</a>
+        </div>
+      </div>
+
+      <div class="job-breadcrumb">
+        <div>TOP &gt; 求人一覧 &gt; 求人詳細</div>
+        <div class="breadcrumb-links">
+          <span class="breadcrumb-link-member">♥ お気に入り 3</span>
+          <span class="breadcrumb-link-member">⏱ 閲覧履歴 12</span>
+        </div>
+      </div>
+
+      <div class="job-hero">有限会社三橋製作所</div>
+
+      <div class="job-content">
+        <h2 class="job-title">鍛冶工、鉄骨工、金物工（工場製作・組立）募集！安定高収入、安全第一の職場です</h2>
+        <p class="job-desc">家族と過ごす時間、自分の時間、趣味の時間を大事にする会社です・・必要資格は会社が全面支援・・受注量は年々増加しています</p>
+      </div>
+
+      <div class="job-image">企業の現場写真</div>
+
+      <div class="job-info">
+        <dt>契約形態</dt>
+        <dd><span class="job-tag">正社員</span></dd>
+        <dt>給与/報酬</dt>
+        <dd>正社員：日給 15,000円</dd>
+        <dt>勤務地</dt>
+        <dd>東京都</dd>
+      </div>
+
+      <!-- Similar jobs (member only) -->
+      <div class="member-block">
+        <span class="member-tag">会員限定</span>
+        <h4 style="margin:4px 0 10px;color:#993C1D">この企業に似た求人</h4>
+        <div class="history-grid">
+          <div class="history-card"><div class="history-img" style="background:linear-gradient(135deg,#90A4AE,#546E7A)"></div><div class="history-name">○○鉄筋工業</div><div class="history-time">千葉・鉄筋工</div></div>
+          <div class="history-card"><div class="history-img" style="background:linear-gradient(135deg,#90A4AE,#546E7A)"></div><div class="history-name">△△建工</div><div class="history-time">東京・足場</div></div>
+          <div class="history-card"><div class="history-img" style="background:linear-gradient(135deg,#90A4AE,#546E7A)"></div><div class="history-name">□□金物</div><div class="history-time">埼玉・鉄骨</div></div>
+          <div class="history-card"><div class="history-img" style="background:linear-gradient(135deg,#90A4AE,#546E7A)"></div><div class="history-name">▲▲工務店</div><div class="history-time">神奈川・大工</div></div>
+          <div class="history-card"><div class="history-img" style="background:linear-gradient(135deg,#90A4AE,#546E7A)"></div><div class="history-name">●●設備</div><div class="history-time">東京・電気</div></div>
+          <div class="history-card"><div class="history-img" style="background:linear-gradient(135deg,#90A4AE,#546E7A)"></div><div class="history-name">○○組</div><div class="history-time">千葉・大工</div></div>
+        </div>
+      </div>
+
+      <!-- Existing bottom action bar (with member-related enhancements highlighted) -->
+      <div class="job-bottom-bar">
+        <button class="btn-keep" style="border:2px dashed var(--member-border) !important">♡ お気に入り登録する</button>
+        <button class="btn-chat" style="border:2px dashed var(--member-border) !important">💬 チャットで質問する</button>
+        <button class="btn-apply">応募する</button>
+      </div>
+
+      <!-- Chat panel expanded (when clicked) -->
+      <div class="chat-panel">
+        <span class="chat-panel-tag">会員限定 / 展開時</span>
+        <div class="chat-panel-header">
+          <span>💬 相談チャット (2件)</span>
+          <span style="font-size:11px">─ ×</span>
+        </div>
+        <div class="chat-list">
+          <div class="chat-item unread">
+            <div class="chat-avatar-sm" style="background:var(--gaten-blue)">三</div>
+            <div class="chat-meta">
+              <div class="chat-name">有限会社三橋製作所</div>
+              <div class="chat-msg">経験者優遇です。ご質問あれば...</div>
+              <div class="chat-time">14:32</div>
+            </div>
+            <div class="chat-unread-dot"></div>
+          </div>
+          <div class="chat-item unread">
+            <div class="chat-avatar-sm" style="background:var(--gaten-green)">東</div>
+            <div class="chat-meta">
+              <div class="chat-name">東洋グリーン株式会社</div>
+              <div class="chat-msg">面接日時の件、いかがでしょう...</div>
+              <div class="chat-time">10:15</div>
+            </div>
+            <div class="chat-unread-dot"></div>
+          </div>
+          <div class="chat-item">
+            <div class="chat-avatar-sm" style="background:#9E9E9E">○</div>
+            <div class="chat-meta">
+              <div class="chat-name">○○建設</div>
+              <div class="chat-msg">ご応募ありがとうございました</div>
+              <div class="chat-time">昨日</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:8px;text-align:center;background:var(--gray-50);font-size:11px;border-top:1px solid var(--gray-200)">
+          <span style="color:var(--member);font-weight:bold">すべてのチャットを見る ›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotations">
+      <h4>追加要素のポイント</h4>
+      <ul>
+        <li><strong>パンくず横の「お気に入り 3／閲覧履歴 12」</strong>：既存リンクを会員バッジ風に変更。クリックで通常サイト上の専用ページへ（管理画面に飛ばない）</li>
+        <li><strong>下部の既存ボタンに点線枠</strong>：これらは「ログイン中だからこそ機能する」要素であることを明示（非ログイン時はログイン誘導モーダルを表示）</li>
+        <li><strong>「チャットで質問する」をクリックすると、画面右下にチャットパネルが展開</strong>。管理画面に遷移せずその場で会話可能。未読バッジで他の進行中チャットも確認できる</li>
+        <li><strong>ページ下部の「この企業に似た求人」</strong>：閲覧履歴と組み合わせたレコメンド</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ 案3: マイページドロップダウン ============ -->
+  <div class="section">
+    <div class="section-header">
+      <h2>案③ ヘッダードロップダウン（会員バッジクリック時）</h2>
+      <p>サイト全域で共通。「マイページ▾」をクリックすると、管理画面の主要メニューを縮約した形で展開する。</p>
+    </div>
+
+    <div class="gaten-mockup" style="background:#F5F5F5">
+      <div class="gaten-header">
+        <div class="gaten-logo">GATEN職</div>
+        <div class="gaten-header-right">
+          <a class="highlight">求人掲載を検討中の企業様へ</a>
+          <div class="member-dropdown" style="background:white;border:2px solid var(--member);color:var(--member)">
+            <div class="avatar">木</div>
+            <span>木脇さん</span>
+            <span style="font-size:10px;background:#D32F2F;color:white;padding:1px 5px;border-radius:8px">3</span>
+            <span>▴</span>
+          </div>
+          <a>≡</a>
+        </div>
+      </div>
+
+      <!-- Dropdown expanded below header -->
+      <div style="background:#F5F5F5;padding:0 20px 24px;display:flex;justify-content:flex-end">
+        <div style="display:flex;flex-direction:column;align-items:flex-end">
+          <div style="color:var(--member);font-size:12px;margin:8px 16px 4px;font-weight:bold">↑ クリック ／ ↓ メニュー展開</div>
+          <div style="width:320px;background:white;border:2px dashed var(--member-border);border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,0.15);padding:14px;position:relative">
+            <div style="position:absolute;top:-10px;left:14px;background:var(--member);color:white;font-size:10px;padding:2px 8px;border-radius:3px;font-weight:bold">会員限定ドロップダウン</div>
+
+            <div style="display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--gray-200);margin-top:4px">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold">木</div>
+              <div>
+                <div style="font-weight:bold;font-size:13px">木脇 貴法 さん</div>
+                <div style="font-size:11px;color:var(--gray-700)">プロフィール完成度：25%</div>
+              </div>
+            </div>
+
+            <div style="font-size:11px;color:var(--member);font-weight:bold;margin:10px 0 4px">相談チャット</div>
+            <div style="display:flex;align-items:center;padding:6px 0;font-size:12px"><span style="width:24px">💬</span><span>チャット</span><span style="margin-left:auto;background:#D32F2F;color:white;font-size:10px;padding:1px 6px;border-radius:8px">2</span></div>
+            <div style="display:flex;align-items:center;padding:6px 0;font-size:12px;color:var(--gray-700)"><span style="width:24px">🔍</span><span>押すだけ検索</span></div>
+
+            <div style="font-size:11px;color:var(--member);font-weight:bold;margin:10px 0 4px">閲覧</div>
+            <div style="display:flex;align-items:center;padding:6px 0;font-size:12px"><span style="width:24px">♥</span><span>お気に入り</span><span style="margin-left:auto;font-size:11px;color:var(--gray-700)">3件</span></div>
+            <div style="display:flex;align-items:center;padding:6px 0;font-size:12px"><span style="width:24px">⏱</span><span>閲覧履歴</span><span style="margin-left:auto;font-size:11px;color:var(--gray-700)">12件</span></div>
+
+            <div style="font-size:11px;color:var(--gray-700);font-weight:bold;margin:10px 0 4px">プロフィール</div>
+            <div style="display:flex;align-items:center;padding:6px 0;font-size:12px;color:var(--gray-700)"><span style="width:24px">📋</span><span>基本情報・職歴</span></div>
+
+            <div style="border-top:1px solid var(--gray-200);padding-top:8px;margin-top:8px;display:flex;justify-content:space-between;font-size:11px">
+              <span style="color:var(--primary);font-weight:bold">マイページ（全機能）›</span>
+              <span style="color:var(--gray-500)">ログアウト</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotations">
+      <h4>追加要素のポイント</h4>
+      <ul>
+        <li><strong>管理画面のサイドバー構造をそのまま縮約</strong>：相談チャット・閲覧・プロフィールの3カテゴリ</li>
+        <li><strong>「チャット」と「お気に入り」「閲覧履歴」のクリック先は通常サイト上の会員向けページ</strong>（/member 内ではなく、例えば /favorites のような通常サイトURL）</li>
+        <li><strong>件数・未読バッジを各メニュー右側に表示</strong>。一目で状況把握ができる</li>
+        <li>「マイページ（全機能）」リンクは残し、従来の管理画面にもアクセスできる</li>
+        <li>全ページ共通のヘッダーから呼び出せるので、どこで企業を見ていても管理画面に戻る必要がなくなる</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ 課題：検索システムの整理 ============ -->
+  <div class="section" style="border-left:6px solid #D32F2F">
+    <div class="section-header" style="border-left-color:#D32F2F">
+      <h2 style="color:#D32F2F">⚠ 検討の前提となる課題：2つの検索システムの目的整理</h2>
+      <p>UI統合の前に、まず公開検索と会員検索の役割の重複・整理が必要</p>
+    </div>
+
+    <p style="font-size:13px;color:var(--gray-700)">GATEN職には現在、目的が重複する2つの検索システムが並立しています。レイアウト統合を進めるにあたり、まず2つの目的・役割を明確に定義する必要があります。</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:12px">
+      <thead>
+        <tr style="background:var(--primary);color:white">
+          <th style="padding:10px;text-align:left">フィルター軸</th>
+          <th style="padding:10px;text-align:center">公開サイト検索<br/>（gaten.info/pref11等）</th>
+          <th style="padding:10px;text-align:center">会員 押すだけ検索<br/>（gaten.info/member/search）</th>
+          <th style="padding:10px;text-align:left">備考</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--gray-200)"><td style="padding:8px">勤務地</td><td style="text-align:center;padding:8px">◎</td><td style="text-align:center;padding:8px">◎</td><td style="padding:8px">両方にあり</td></tr>
+        <tr style="border-bottom:1px solid var(--gray-200);background:#FFF3E0"><td style="padding:8px">業種分類</td><td style="text-align:center;padding:8px">国が定めた29業種</td><td style="text-align:center;padding:8px">GATEN職独自分類</td><td style="padding:8px;color:#D32F2F"><strong>分類体系が異なる（要整理）</strong></td></tr>
+        <tr style="border-bottom:1px solid var(--gray-200)"><td style="padding:8px">建築工程</td><td style="text-align:center;padding:8px">◎</td><td style="text-align:center;padding:8px">✗</td><td style="padding:8px">公開のみ（業界専門軸）</td></tr>
+        <tr style="border-bottom:1px solid var(--gray-200)"><td style="padding:8px">契約形態</td><td style="text-align:center;padding:8px">◎</td><td style="text-align:center;padding:8px">◎</td><td style="padding:8px">両方にあり</td></tr>
+        <tr style="border-bottom:1px solid var(--gray-200)"><td style="padding:8px">給与</td><td style="text-align:center;padding:8px">◎</td><td style="text-align:center;padding:8px">◎</td><td style="padding:8px">両方にあり</td></tr>
+        <tr style="border-bottom:1px solid var(--gray-200)"><td style="padding:8px">資格</td><td style="text-align:center;padding:8px">◎</td><td style="text-align:center;padding:8px">✗</td><td style="padding:8px">公開のみ（業界専門軸）</td></tr>
+        <tr style="border-bottom:1px solid var(--gray-200)"><td style="padding:8px">タグ／こだわり条件</td><td style="text-align:center;padding:8px">◎ タグ設定</td><td style="text-align:center;padding:8px">◎ こだわり条件で見つけて</td><td style="padding:8px">名称・項目が異なる可能性あり</td></tr>
+        <tr style="border-bottom:1px solid var(--gray-200)"><td style="padding:8px">性別</td><td style="text-align:center;padding:8px">✗</td><td style="text-align:center;padding:8px">◎</td><td style="padding:8px">押すだけのみ（属性軸）</td></tr>
+        <tr style="border-bottom:1px solid var(--gray-200)"><td style="padding:8px">年齢</td><td style="text-align:center;padding:8px">✗</td><td style="text-align:center;padding:8px">◎ 7段階</td><td style="padding:8px">押すだけのみ（属性軸）</td></tr>
+        <tr style="border-bottom:1px solid var(--gray-200)"><td style="padding:8px">キーワード／フリー検索</td><td style="text-align:center;padding:8px">◎</td><td style="text-align:center;padding:8px">◎</td><td style="padding:8px">両方にあり</td></tr>
+        <tr><td style="padding:8px">条件保存</td><td style="text-align:center;padding:8px">✗（推測）</td><td style="text-align:center;padding:8px">◎</td><td style="padding:8px">押すだけのみ（会員特典）</td></tr>
+      </tbody>
+    </table>
+
+    <div style="background:#FFEBEE;border-left:4px solid #D32F2F;padding:14px;border-radius:6px;margin-top:14px;font-size:13px;line-height:1.7">
+      <strong style="color:#D32F2F">論点（社内合意が必要）</strong>
+      <ul style="margin:8px 0 0;padding-left:20px">
+        <li><strong>業種分類が2つあること</strong>は本質的な整理が必要（国が定めた29業種 vs GATEN職独自分類）。求職者は「同じ求人を別の言葉で探す」状況になっている</li>
+        <li>「押すだけ」検索なのに実際は項目が多くて押すだけになっていない</li>
+        <li>そもそも会員特典である「条件保存」は全フィルターに広げてよいのでは？</li>
+      </ul>
+      <strong style="color:#D32F2F;display:block;margin-top:10px">統合UI設計の前に決めるべきこと</strong>
+      <ol style="margin:8px 0 0;padding-left:20px">
+        <li>2つの検索の目的を改めて定義（例：公開＝業界用詳細検索／押すだけ＝求職者向けクイックスタート）</li>
+        <li>業種分類の二重管理の整理（マッピングテーブル作成 or 一方への統一）</li>
+        <li>役割を明確化した上で、下記の案④以降のUI統合を実装</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ============ 案4: 検索結果ページ強化 ============ -->
+  <div class="section">
+    <div class="section-header">
+      <h2>案④ 検索結果ページ（公開サイト側）— (A'/推奨) ハイブリッド方式</h2>
+      <p>上記「2つの検索の目的整理」を先行合意した前提で、既存のレフトナビは温存しつつ、押すだけ検索を「簡単スタート」入口として最上部に追加。性別・年齢もレフトナビに追加。</p>
+    </div>
+
+    <div class="gaten-mockup" style="min-height:auto">
+      <div class="gaten-header">
+        <div class="gaten-logo">GATEN職</div>
+        <div class="gaten-header-right">
+          <a class="highlight">求人掲載を検討中の企業様へ</a>
+          <div class="member-dropdown"><div class="avatar">木</div><span>木脇さん</span><span style="font-size:10px;background:#D32F2F;color:white;padding:1px 5px;border-radius:8px">3</span><span>▾</span></div>
+          <a>≡</a>
+        </div>
+      </div>
+
+      <!-- Breadcrumb -->
+      <div style="padding:8px 24px;background:white;font-size:11px;color:var(--gaten-blue);border-bottom:1px solid var(--gray-200);display:flex;justify-content:space-between;align-items:center">
+        <div>TOP &gt; 求人一覧 &gt; 埼玉県</div>
+        <div style="display:flex;gap:10px">
+          <span style="background:var(--member-bg);border:1.5px dashed var(--member-border);padding:2px 8px;border-radius:12px;color:#993C1D;font-weight:bold;font-size:11px">♥ お気に入り 3</span>
+          <span style="background:var(--member-bg);border:1.5px dashed var(--member-border);padding:2px 8px;border-radius:12px;color:#993C1D;font-weight:bold;font-size:11px">⏱ 閲覧履歴 12</span>
+        </div>
+      </div>
+
+      <div style="padding:18px 24px 14px;background:white">
+        <h3 style="margin:0 0 4px;font-size:18px">埼玉県の求人情報</h3>
+        <div style="font-size:12px;color:var(--gray-700)">求人情報：<strong style="color:#D32F2F">1,035件</strong></div>
+      </div>
+
+      <!-- 2-column layout: left nav + results -->
+      <div style="display:grid;grid-template-columns:240px 1fr;gap:16px;padding:0 24px 24px;background:white">
+
+        <!-- Left navigation (existing filters preserved + new member filters) -->
+        <div style="border:1px solid var(--gray-300);border-radius:6px;padding:12px;font-size:11px;background:#FAFAFA">
+          <div style="font-weight:bold;font-size:13px;margin-bottom:10px">条件で絞り込み</div>
+
+          <!-- NEW: 押すだけ検索 banner (member only) -->
+          <div style="background:var(--member-bg);border:2px dashed var(--member-border);border-radius:6px;padding:10px;margin-bottom:14px;position:relative">
+            <div style="position:absolute;top:-7px;left:8px;background:var(--member);color:white;font-size:9px;padding:1px 6px;border-radius:2px;font-weight:bold">会員限定・新規追加</div>
+            <div style="margin-top:4px;font-size:12px;font-weight:bold;color:#993C1D">🎯 押すだけ検索</div>
+            <div style="font-size:10px;color:#993C1D;margin-top:2px">かんたんスタート（GATEN職独自分類）</div>
+            <button style="margin-top:6px;background:var(--member);color:white;border:none;padding:5px 10px;border-radius:3px;font-size:10px;font-weight:bold;width:100%">かんたん設定する →</button>
+          </div>
+
+          <!-- Existing filters (preserved) -->
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--gray-200)">
+            <span>勤務地</span>
+            <span style="background:white;border:1px solid var(--gray-300);padding:2px 8px;border-radius:3px;font-size:10px">設定する ↗</span>
+          </div>
+          <div style="font-size:10px;color:var(--gray-500);padding-left:4px">59件選択中</div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--gray-200)">
+            <div><span style="background:#FFF3CD;font-size:9px;padding:1px 4px;border-radius:2px">国が定めた</span> 業種分類</div>
+            <span style="background:white;border:1px solid var(--gray-300);padding:2px 8px;border-radius:3px;font-size:10px">設定する ↗</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--gray-200)">
+            <span>建築工程</span>
+            <span style="background:white;border:1px solid var(--gray-300);padding:2px 8px;border-radius:3px;font-size:10px">設定する ↗</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--gray-200)">
+            <span>契約形態</span>
+            <span style="background:white;border:1px solid var(--gray-300);padding:2px 8px;border-radius:3px;font-size:10px">設定する ↗</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--gray-200)">
+            <span>給与</span>
+            <span style="background:white;border:1px solid var(--gray-300);padding:2px 8px;border-radius:3px;font-size:10px">設定する ↗</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--gray-200)">
+            <span>資格</span>
+            <span style="background:white;border:1px solid var(--gray-300);padding:2px 8px;border-radius:3px;font-size:10px">設定する ↗</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--gray-200)">
+            <span>タグ設定</span>
+            <span style="background:white;border:1px solid var(--gray-300);padding:2px 8px;border-radius:3px;font-size:10px">設定する ↗</span>
+          </div>
+
+          <!-- NEW: 性別・年齢 (from 押すだけ検索) -->
+          <div style="background:var(--member-bg);border:2px dashed var(--member-border);border-radius:4px;padding:8px;margin-top:10px;position:relative">
+            <div style="position:absolute;top:-7px;left:6px;background:var(--member);color:white;font-size:9px;padding:1px 5px;border-radius:2px;font-weight:bold">押すだけ検索から追加</div>
+            <div style="margin-top:4px;display:flex;justify-content:space-between;align-items:center;padding:4px 0">
+              <span style="color:#993C1D">性別</span>
+              <span style="background:white;border:1px solid var(--member-border);padding:2px 8px;border-radius:3px;font-size:10px;color:#993C1D">設定する ↗</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0">
+              <span style="color:#993C1D">年齢</span>
+              <span style="background:white;border:1px solid var(--member-border);padding:2px 8px;border-radius:3px;font-size:10px;color:#993C1D">設定する ↗</span>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--gray-200)">
+            <div style="font-size:10px;color:var(--gray-700);margin-bottom:6px">キーワード検索</div>
+            <div style="background:white;border:1px solid var(--gray-300);padding:6px;border-radius:3px;font-size:10px;color:var(--gray-500)">キーワード</div>
+          </div>
+
+          <!-- Member: 条件保存 -->
+          <div style="margin-top:10px;background:var(--member-bg);border:2px dashed var(--member-border);border-radius:4px;padding:6px 8px;font-size:10px;color:#993C1D;font-weight:bold;text-align:center">
+            💾 この条件を保存する（会員限定）
+          </div>
+
+          <button style="margin-top:10px;width:100%;background:var(--gaten-green);color:white;border:none;padding:8px;border-radius:3px;font-size:12px;font-weight:bold">🔍 この条件で検索する</button>
+        </div>
+
+        <!-- Right: Results -->
+        <div>
+          <div style="font-size:11px;color:var(--gray-700);margin-bottom:8px">1,035件中 1-25件を表示</div>
+
+        <!-- Result card (member enhanced) -->
+        <div style="border:1px solid var(--gray-300);border-radius:6px;overflow:hidden;margin-bottom:10px;display:grid;grid-template-columns:180px 1fr 160px;gap:0;background:white">
+          <div style="background:linear-gradient(135deg,#5D4037,#3E2723);color:white;display:flex;align-items:center;justify-content:center;font-size:12px">企業画像</div>
+          <div style="padding:12px">
+            <div style="font-weight:bold;font-size:14px;margin-bottom:2px">土木一式・しゅんせつ工事/鉄筋工事</div>
+            <div style="font-size:11px;color:var(--gray-700);margin-bottom:8px">有限会社誠真工業</div>
+            <div style="display:grid;grid-template-columns:auto 1fr auto 1fr auto 1fr;gap:8px;font-size:11px;align-items:center;margin-bottom:8px">
+              <span style="background:var(--gray-100);padding:2px 6px;border-radius:2px;font-size:10px">地域</span>
+              <span>東京都・埼玉県</span>
+              <span style="background:var(--gray-100);padding:2px 6px;border-radius:2px;font-size:10px">給与</span>
+              <span>月給 300,000円〜</span>
+              <span style="background:var(--gray-100);padding:2px 6px;border-radius:2px;font-size:10px">契約</span>
+              <span>正社員</span>
+            </div>
+            <!-- Member-only chat status badge -->
+            <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+              <div style="background:var(--member-bg);border:1.5px dashed var(--member-border);color:var(--gaten-green);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:bold">● チャット相談可</div>
+              <div style="display:flex;align-items:center;gap:6px;background:var(--member-bg);border:1.5px dashed var(--member-border);padding:2px 8px 2px 4px;border-radius:14px"><div style="width:18px;height:18px;background:#9E9E9E;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:9px">関</div><span style="font-size:11px;color:#993C1D;font-weight:bold">関根 誠（担当）</span></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;padding:12px;background:var(--member-bg);border-left:2px dashed var(--member-border);justify-content:center">
+            <button style="background:#FFF8E1;color:#856404;border:1px solid #FFC107;padding:6px 8px;border-radius:3px;font-size:10px;font-weight:bold">📌 お気に入り登録</button>
+            <button style="background:white;color:var(--gaten-blue);border:1px solid var(--gaten-blue);padding:6px 8px;border-radius:3px;font-size:10px;font-weight:bold">💬 チャットで相談</button>
+            <button style="background:var(--gaten-blue);color:white;border:none;padding:6px 8px;border-radius:3px;font-size:10px;font-weight:bold">📄 求人ページを見る</button>
+          </div>
+        </div>
+
+        <!-- Result card 2 -->
+        <div style="border:1px solid var(--gray-300);border-radius:6px;overflow:hidden;margin-bottom:10px;display:grid;grid-template-columns:180px 1fr 160px;gap:0;background:white">
+          <div style="background:linear-gradient(135deg,#607D8B,#37474F);color:white;display:flex;align-items:center;justify-content:center;font-size:12px">企業画像</div>
+          <div style="padding:12px">
+            <div style="font-weight:bold;font-size:14px;margin-bottom:2px">コンクリート打設工事/土工事/足場鳶</div>
+            <div style="font-size:11px;color:var(--gray-700);margin-bottom:8px">株式会社シューケン</div>
+            <div style="font-size:11px;color:var(--gray-700);margin-bottom:8px">東京都・神奈川県・埼玉県 / 日給 12,000円〜 / 正社員</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+              <div style="background:var(--member-bg);border:1.5px dashed var(--member-border);color:var(--gaten-green);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:bold">● チャット相談可</div>
+              <div style="display:flex;align-items:center;gap:6px;background:var(--member-bg);border:1.5px dashed var(--member-border);padding:2px 8px 2px 4px;border-radius:14px"><div style="width:18px;height:18px;background:#9E9E9E;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:9px">髙</div><span style="font-size:11px;color:#993C1D;font-weight:bold">髙橋（担当）</span></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;padding:12px;background:var(--member-bg);border-left:2px dashed var(--member-border);justify-content:center">
+            <button style="background:#FFF8E1;color:#856404;border:1px solid #FFC107;padding:6px 8px;border-radius:3px;font-size:10px;font-weight:bold">📌 お気に入り登録</button>
+            <button style="background:white;color:var(--gaten-blue);border:1px solid var(--gaten-blue);padding:6px 8px;border-radius:3px;font-size:10px;font-weight:bold">💬 チャットで相談</button>
+            <button style="background:var(--gaten-blue);color:white;border:none;padding:6px 8px;border-radius:3px;font-size:10px;font-weight:bold">📄 求人ページを見る</button>
+          </div>
+        </div>
+
+        <!-- Non-member compact card for comparison -->
+        <div style="border:1px solid var(--gray-300);border-radius:6px;overflow:hidden;display:grid;grid-template-columns:180px 1fr 120px;gap:0;background:white;opacity:0.7">
+          <div style="background:linear-gradient(135deg,#90A4AE,#546E7A);color:white;display:flex;align-items:center;justify-content:center;font-size:12px">企業画像</div>
+          <div style="padding:12px">
+            <div style="font-weight:bold;font-size:14px;margin-bottom:2px">土木一式工事/基礎工事</div>
+            <div style="font-size:11px;color:var(--gray-700);margin-bottom:6px">○○建設株式会社</div>
+            <div style="font-size:11px;color:var(--gray-700)">東京都 / 月給 280,000円〜 / 正社員</div>
+            <div style="font-size:10px;color:var(--gray-500);margin-top:4px;font-style:italic">※ 非ログイン時のシンプル表示（参考）</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;padding:12px"><button style="background:var(--gaten-blue);color:white;border:none;padding:6px 12px;border-radius:3px;font-size:11px;font-weight:bold">詳細を見る</button></div>
+        </div>
+        </div><!-- /right column -->
+      </div><!-- /grid -->
+    </div><!-- /gaten-mockup -->
+
+    <div class="annotations">
+      <h4>追加要素のポイント（A'/推奨案）</h4>
+      <ul>
+        <li><strong>レフトナビ最上部に「押すだけ検索」入口バナーを新設</strong>：「かんたん設定する」ボタンでGATEN職独自分類のモーダルが展開（簡単スタート用）</li>
+        <li><strong>既存の絞り込み項目（勤務地・業種分類・建築工程・契約形態・給与・資格・タグ設定）はそのまま温存</strong>：建築工程・資格といった業界専門軸を失わない</li>
+        <li><strong>レフトナビに「性別・年齢」を追加</strong>（押すだけ検索の独自軸を公開サイトにも展開）</li>
+        <li><strong>「この条件を保存する」ボタンを追加</strong>：会員特典として全フィルターの組合せをアカウントに保存。次回ログイン時に復元</li>
+        <li><strong>右上のパンくず横「お気に入り 3／閲覧履歴 12」</strong>：既存リンクを会員バッジ風に変更、遷移先は通常サイト上のページ</li>
+        <li>各結果カードに会員向けの追加情報：<strong>チャット相談可ステータス／担当者アバター・氏名／お気に入り登録ボタン</strong>（既存の3アクション「チャットで質問／応募する／詳細を見る」に4つ目として「お気に入り登録」を加える）</li>
+        <li>非ログイン時は最下段のシンプル表示。会員ログイン時のみリッチ表示が出る</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ 案5: 押すだけ検索モーダル ============ -->
+  <div class="section">
+    <div class="section-header">
+      <h2>案⑤ 押すだけ検索の公開サイト統合（モーダル展開時）</h2>
+      <p>押すだけ検索の入口をクリックすると、画面中央にカテゴリーチェックUIをモーダルで展開。管理画面に遷移せず条件設定が完結し、結果は即座に検索結果ページに反映される。</p>
+    </div>
+
+    <div class="gaten-mockup" style="position:relative;min-height:auto;background:#f5f5f5">
+      <div class="gaten-header">
+        <div class="gaten-logo">GATEN職</div>
+        <div class="gaten-header-right">
+          <a class="highlight">求人掲載を検討中の企業様へ</a>
+          <div class="member-dropdown"><div class="avatar">木</div><span>木脇さん</span><span>▾</span></div>
+          <a>≡</a>
+        </div>
+      </div>
+
+      <div style="padding:20px;background:rgba(0,0,0,0.4)">
+        <div style="max-width:640px;margin:0 auto;background:white;border:2px dashed var(--member-border);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.2);overflow:hidden">
+          <div style="background:var(--member);color:white;padding:10px 16px;display:flex;justify-content:space-between;align-items:center">
+            <div style="display:flex;align-items:center;gap:8px;font-weight:bold">
+              <span>🎯</span><span>押すだけ検索</span>
+              <span style="font-size:10px;background:white;color:var(--member);padding:1px 6px;border-radius:2px">会員限定</span>
+            </div>
+            <span style="font-size:13px">×</span>
+          </div>
+          <div style="padding:16px 20px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--gray-200)">
+              <div style="font-size:12px;color:var(--gray-700)">検討している業種を選んでください</div>
+              <div style="font-size:13px"><strong style="color:#D32F2F;font-size:18px">7,682</strong> 件</div>
+            </div>
+
+            <div style="margin-bottom:12px">
+              <div style="font-size:13px;font-weight:bold;margin-bottom:6px">☑ 設計・デザイン（4）</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;padding-left:20px">
+                <span style="background:var(--gaten-blue);color:white;padding:3px 10px;border-radius:12px;font-size:10px">● 建築設計</span>
+                <span style="background:var(--gray-100);color:var(--gray-700);padding:3px 10px;border-radius:12px;font-size:10px">○ 内装設計・インテリア</span>
+                <span style="background:var(--gaten-blue);color:white;padding:3px 10px;border-radius:12px;font-size:10px">● 土木設計</span>
+                <span style="background:var(--gray-100);color:var(--gray-700);padding:3px 10px;border-radius:12px;font-size:10px">○ 設計補助</span>
+              </div>
+            </div>
+
+            <div style="margin-bottom:12px">
+              <div style="font-size:13px;font-weight:bold;margin-bottom:6px">☐ 準備・付帯・雑工事（7）</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;padding-left:20px;opacity:0.5">
+                <span style="background:var(--gray-100);color:var(--gray-700);padding:3px 10px;border-radius:12px;font-size:10px">○ 測量</span>
+                <span style="background:var(--gray-100);color:var(--gray-700);padding:3px 10px;border-radius:12px;font-size:10px">○ 調査</span>
+                <span style="background:var(--gray-100);color:var(--gray-700);padding:3px 10px;border-radius:12px;font-size:10px">○ 墨出し</span>
+                <span style="background:var(--gray-100);color:var(--gray-700);padding:3px 10px;border-radius:12px;font-size:10px">○ 産廃・残土</span>
+              </div>
+            </div>
+
+            <div style="margin-bottom:12px">
+              <div style="font-size:13px;font-weight:bold;margin-bottom:6px">☑ 一式工事（6）</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;padding-left:20px">
+                <span style="background:var(--gaten-blue);color:white;padding:3px 10px;border-radius:12px;font-size:10px">● 建築一式工事</span>
+                <span style="background:var(--gaten-blue);color:white;padding:3px 10px;border-radius:12px;font-size:10px">● 土木一式・しゅんせつ工事</span>
+                <span style="background:var(--gray-100);color:var(--gray-700);padding:3px 10px;border-radius:12px;font-size:10px">○ 内装一式工事</span>
+              </div>
+            </div>
+
+            <div style="margin-bottom:12px;opacity:0.4">
+              <div style="font-size:13px;font-weight:bold;margin-bottom:6px">☐ 躯体工事（6）他</div>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px solid var(--gray-200)">
+              <span style="font-size:12px;color:var(--gray-700)">すべてをクリア</span>
+              <div>
+                <span style="font-size:12px;color:var(--gray-700);margin-right:12px">該当数 <strong style="color:#D32F2F;font-size:16px">7,682</strong> 件</span>
+                <button style="background:var(--gaten-blue);color:white;border:none;padding:8px 24px;border-radius:4px;font-size:13px;font-weight:bold">この条件で検索する</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotations">
+      <h4>追加要素のポイント</h4>
+      <ul>
+        <li><strong>管理画面「押すだけ検索」のUIをそのままモーダル化</strong>：チェックボックスで業種を選択、件数がリアルタイム更新</li>
+        <li><strong>「この条件で検索する」をクリックすると、案④の検索結果ページに即座に反映</strong>（条件は会員アカウントに紐づき保存）</li>
+        <li>サイト全域から呼び出せるため、検索結果を見ている途中で<strong>気軽に条件を変更</strong>できる（管理画面に戻る必要がない）</li>
+        <li>条件設定は会員アカウントに保存され、ログイン状態であればどの画面でも引き継がれる</li>
+        <li>非ログイン時は入口自体を非表示。ログイン誘導の文脈で「会員になると押すだけ検索が使えます」と訴求</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ サマリ ============ -->
+  <div class="section">
+    <div class="section-header">
+      <h2>実装ポイントのサマリ</h2>
+      <p>表画面に統合する会員機能の全体像</p>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead>
+        <tr style="background:var(--primary);color:white">
+          <th style="padding:10px;text-align:left">統合する要素</th>
+          <th style="padding:10px;text-align:left">配置場所</th>
+          <th style="padding:10px;text-align:left">機能内容</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--gray-200)">
+          <td style="padding:10px;font-weight:bold;color:#993C1D">会員ヘッダーバッジ</td>
+          <td style="padding:10px">全ページ共通ヘッダー右上</td>
+          <td style="padding:10px">「マイページ▾」を会員アバター・未読バッジ付きに変更</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-200);background:var(--gray-50)">
+          <td style="padding:10px;font-weight:bold;color:#993C1D">マイメニュー・ドロップダウン</td>
+          <td style="padding:10px">ヘッダーバッジ展開時</td>
+          <td style="padding:10px">チャット／お気に入り／閲覧履歴へのリンクと件数表示</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-200)">
+          <td style="padding:10px;font-weight:bold;color:#993C1D">チャットパネル</td>
+          <td style="padding:10px">右下フローティング</td>
+          <td style="padding:10px">既存「チャット相談」を拡張。進行中チャット一覧をその場で確認・返信可能</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-200);background:var(--gray-50)">
+          <td style="padding:10px;font-weight:bold;color:#993C1D">パンくず横バッジ</td>
+          <td style="padding:10px">企業一覧・詳細のパンくず横</td>
+          <td style="padding:10px">既存「お気に入り」「閲覧履歴」リンクを会員バッジ風に。遷移先は通常サイト内ページ</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-200)">
+          <td style="padding:10px;font-weight:bold;color:#993C1D">「最近見た企業」セクション</td>
+          <td style="padding:10px">トップページ・検索結果</td>
+          <td style="padding:10px">閲覧履歴の最新6件を企業画像つきで表示</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-200);background:var(--gray-50)">
+          <td style="padding:10px;font-weight:bold;color:#993C1D">「似た求人」セクション</td>
+          <td style="padding:10px">企業詳細ページ下部</td>
+          <td style="padding:10px">閲覧履歴・タグから類似企業をレコメンド</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-200)">
+          <td style="padding:10px;font-weight:bold;color:#993C1D">キープボタン</td>
+          <td style="padding:10px">求人カード・詳細ページ</td>
+          <td style="padding:10px">既存「お気に入り登録する」と同じAPIに接続。一覧カードからもワンクリック保存</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-200);background:var(--gray-50)">
+          <td style="padding:10px;font-weight:bold;color:#993C1D">検索結果カード強化</td>
+          <td style="padding:10px">公開サイト検索結果</td>
+          <td style="padding:10px">担当者・チャット相談可バッジ・3アクションを管理画面側と同等に表示</td>
+        </tr>
+        <tr>
+          <td style="padding:10px;font-weight:bold;color:#993C1D">押すだけ検索 入口・モーダル</td>
+          <td style="padding:10px">検索バー直下／全ページ</td>
+          <td style="padding:10px">公開サイトの検索バーに常設。カテゴリーチェックモーダルを展開し条件設定はサイト全域に反映</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--gray-700);margin-top:14px;padding:12px;background:var(--gray-50);border-radius:6px;border-left:4px solid var(--primary)"><strong style="color:var(--primary)">重要：</strong>すべての追加要素は<strong>既存の会員管理画面と同じデータベース・API</strong>を参照することで、管理画面と通常サイトで保存状態・チャット履歴が完全に同期されます。</p>
+  </div>
+</div>
+</body>
+</html>
